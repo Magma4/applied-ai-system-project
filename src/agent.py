@@ -95,34 +95,41 @@ class CuratorAgent:
 
     def process_request(self, query: str, guardrails: List[Any] = None) -> Tuple[List[Dict[str, Any]], UserProfile, str]:
         """
-        The main Plan -> Act -> Check loop.
+        Enhanced Agentic Workflow: Plan -> Act -> Reflect -> Refine.
         """
-        logger.info("=== Agentic Workflow Started ===")
-        # 1. Plan
+        logger.info("=== Enhanced Agentic Workflow Started ===")
+        
+        # 1. PLAN
         profile = self.parse_intent(query)
         strategy = self.select_strategy(profile, query)
         
-        # 2. Act
-        prefs = {
-            "favorite_genre": profile.favorite_genre,
-            "favorite_mood": profile.favorite_mood,
-            "target_energy": profile.target_energy,
-            "likes_acoustic": profile.likes_acoustic,
-            "scoring_mode": strategy
-        }
+        # 2. ACT (Initial attempt)
+        logger.info(f"[Agent] Attempt 1: Strategy '{strategy}'")
+        recommendations = self._retrieve(profile, strategy)
         
-        logger.info("[Agent] Retrieving recommendations from catalog...")
-        recommendations = recommend_songs(
-            user_prefs=prefs,
-            songs=self.catalog,
-            k=10, # Retrieve more so we can filter
-            scoring_mode=strategy,
-            apply_diversity=True
-        )
+        # 3. REFLECT (Self-Evaluation)
+        logger.info("[Agent] Reflecting on results...")
+        avg_energy = sum(r[0]["energy"] for r in recommendations) / len(recommendations) if recommendations else 0
+        energy_gap = abs(avg_energy - profile.target_energy)
         
-        # 3. Check (Guardrails)
+        needs_refinement = False
+        if energy_gap > 0.25 and strategy != "energy_focused":
+            logger.warning(f"  [Reflection] Results energy ({avg_energy:.2f}) is too far from target ({profile.target_energy:.2f}).")
+            needs_refinement = True
+            strategy = "energy_focused"
+        elif len(set(r[0]["genre"] for r in recommendations)) < 2:
+            logger.warning("  [Reflection] Results lack genre diversity.")
+            needs_refinement = True
+            # We don't change strategy here, but we've noted the need
+            
+        # 4. REFINE (If needed)
+        if needs_refinement:
+            logger.info(f"[Agent] Refinement triggered. Retrying with strategy: '{strategy}'")
+            recommendations = self._retrieve(profile, strategy)
+        
+        # 5. CHECK (Guardrails)
         if guardrails:
-            logger.info("[Agent] Applying Guardrails (Check phase)...")
+            logger.info("[Agent] Final Guardrail Check...")
             safe_recs = []
             for rec in recommendations:
                 song, score, reasons = rec
@@ -135,9 +142,26 @@ class CuratorAgent:
                         break
                 if is_safe:
                     safe_recs.append(rec)
-            recommendations = safe_recs[:5] # Return top 5 safe
+            recommendations = safe_recs[:5]
         else:
             recommendations = recommendations[:5]
             
-        logger.info(f"=== Agentic Workflow Completed. Returned {len(recommendations)} songs. ===")
+        logger.info(f"=== Workflow Completed. Final Strategy: {strategy}. ===")
         return recommendations, profile, strategy
+
+    def _retrieve(self, profile: UserProfile, strategy: str) -> List[Tuple[Dict[str, Any], float, List[str]]]:
+        """Internal helper for retrieval."""
+        prefs = {
+            "favorite_genre": profile.favorite_genre,
+            "favorite_mood": profile.favorite_mood,
+            "target_energy": profile.target_energy,
+            "likes_acoustic": profile.likes_acoustic,
+            "scoring_mode": strategy
+        }
+        return recommend_songs(
+            user_prefs=prefs,
+            songs=self.catalog,
+            k=10,
+            scoring_mode=strategy,
+            apply_diversity=True
+        )
