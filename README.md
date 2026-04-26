@@ -78,4 +78,11 @@ I implemented a `pytest` suite covering the Agent's intent parser and the indivi
 This project taught me that the most powerful part of an AI system isn't the model itself, but the **workflow** surrounding it. Building the "Check" phase of the Agentic loop showed me how developers can wrap unpredictable AI outputs in "Safety Envelopes" (Guardrails) to create systems that users can actually trust in production.
 
 ---
+
+## 🌟 Stretch Features (Extra Credits)
+I implemented two advanced features to demonstrate system maturity:
+1.  **Enhanced Agentic Workflow (+2):** The `CuratorAgent` now performs a **Plan -> Act -> Reflect -> Refine** loop. It evaluates its initial results (Reflection) and, if they don't meet the intent (e.g., energy gap too wide), it automatically refines its strategy and retries the search.
+2.  **Evaluation Harness (+2):** I built a dedicated `src/eval_harness.py` script. It runs a **Golden Dataset** of adversarial prompts and prints a "System Evaluation Report" with PASS/FAIL status and confidence ratings, allowing for objective performance tracking.
+
+---
 *Created for the Applied AI System Project portfolio.*
