@@ -145,7 +145,7 @@ The simulation is **CLI-first**: `python -m src.main` loads `data/songs.csv` and
 
 **Sample visual** (earlier single-profile demo):
 
-![CLI verification: recommendations layout](docs/cli-verification.png)
+![CLI verification: recommendations layout](assets/cli-verification.png)
 
 **Weight-shift experiment** (Phase 4): half genre weight, double energy points — set env then run:
 
