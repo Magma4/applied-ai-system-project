@@ -32,12 +32,17 @@ The system follows a **Plan -> Act -> Check** agentic loop:
     pip install -r requirements.txt
     ```
 
-3.  **Run the application:**
+3.  **Run the CLI application:**
     ```bash
     python -m src.main
     ```
 
-4.  **Run the tests:**
+4.  **Run the Frontend Dashboard (Streamlit):**
+    ```bash
+    streamlit run src/app.py
+    ```
+
+5.  **Run the tests:**
     ```bash
     PYTHONPATH=. pytest
     ```
