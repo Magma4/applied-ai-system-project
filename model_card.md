@@ -1,73 +1,60 @@
-# Model Card — Music Recommender Simulation
+# Model Card — Music Recommender Simulation (Agentic Revamp)
 
 ## Model Name
 
-**VibeFinder 1.0** — a small, see-through song ranker for learning.
+**VibeFinder 2.0 (Agentic Curator)** — a transparent song ranker featuring natural language intent parsing and reliability guardrails.
 
 ---
 
 ## Goal / Task
 
-The recommender **suggests up to five songs** from a fixed list. It does not “learn” from new data each run. It **ranks** every track once, using the same rules, and returns the highest scores.
+The system takes **natural language prompts** (e.g., "I need a high energy pop workout track"), converts them into structured user profiles using an **Agentic Workflow**, retrieves matching songs, and finally applies **Reliability Guardrails** to filter out inappropriate recommendations. It prioritizes trustworthiness and explainability.
 
 ---
 
 ## Data Used
 
-There are **18 songs** in `data/songs.csv`. Each row has **genre**, **mood**, **energy** (0–1), **tempo**, **valence**, **danceability**, **acousticness**, plus **popularity** (0–100), **release_decade**, **mood_tags** (pipe-separated), **production_style**, **instrumental**, and **vocal_language**. The set is **tiny** and made up; many genres or moods appear **once or twice**, so results are **not** like a real streaming catalog.
+There are **18 songs** in `data/songs.csv`. Each row has genre, mood, energy, tempo, and advanced metadata like popularity and release decade. The set is tiny and made up; results are not population-level but serve to demonstrate AI reasoning loops.
 
 ---
 
-## Algorithm Summary
+## Architecture Summary
 
-For each song, we **add points** for **genre** and **mood** matches (exact labels, case-insensitive) and an **energy fit** (closer to the user’s target is better). **Mode** (`balanced`, `genre_first`, `mood_first`, `energy_focused`) changes how strongly those three pillars are weighted. **Optional** user fields turn on more terms: **popularity** (scaled 0–100), **decade** fit vs `preferred_decade`, **mood_tags** overlap, **bedroom** production if the user prefers lofi-style production, **instrumental**, and **language** match.
-
-We usually build the top five with **greedy diversity**: repeating the same **artist** or **genre** in the list **lowers** the effective rank score so the spread is a bit fairer. The CLI prints **reason** lines for each contribution (and diversity notes when they apply).
-
-For experiments, **weight shift** (env var) **cuts** genre weight and **doubles** the energy term to stress-test sensitivity.
+1. **Agentic Layer (`src/agent.py`)**:
+   - **Intent Parsing**: Converts fuzzy natural language into discrete parameters (Genre, Mood, Energy).
+   - **Strategy Selection**: Dynamically chooses the scoring mode (e.g., `energy_focused` vs `mood_first`) based on the query semantics.
+2. **Recommender Core (`src/recommender.py`)**:
+   - Scores songs based on a transparent, multi-factor rule system (adding points for matches).
+3. **Guardrail Layer (`src/guardrails.py`)**:
+   - **Energy Alignment**: Rejects songs if their energy variance from the target is > 0.4.
+   - **Mood Safety**: Prevents contradictory recommendations (e.g., stopping an "Intense" track from reaching a "Relaxed" seeker).
 
 ---
 
 ## Observed Behavior / Biases
 
-**Genre counts a lot.** A **pop** song with **high energy** can land near the top for someone who asked for **happy pop**, even if the song’s mood is **intense**—because wrong moods are **not punished**, they just **miss** the mood bonus.
-
-**Labels are strict.** “Indie pop” is **not** treated as “pop,” so some tracks that *feel* right never get the big genre bump.
-
-**Small data = sameness.** The same rows show up a lot for certain profiles because there are **few** rows that match at all.
+**Strict Filtering:** The new Guardrails successfully prevent the "Gym Hero" problem observed in V1.0. If a user asks for "Relaxed", intense pop tracks are blocked entirely.
+**Deterministic Agent:** The Agent uses rule-based parsing rather than an LLM. While this limits its vocabulary (e.g., it only knows specific genre keywords), it guarantees **100% reproducibility** and eliminates hallucination.
 
 ---
 
 ## Evaluation Process
 
-We ran **several fake user profiles** in the terminal: high-energy pop, chill lofi, intense rock, plus **edge** mixes (e.g. **somber** mood with **very high** energy). We read the **top five** and the **reason** lines for each. We compared **baseline** scoring to a **weight-shift** run (see `docs/phase4-stress-test-output.txt` and `docs/phase4-weight-shift-output.txt`). **pytest** checks basic ranking and that scores return **numbers + reason strings**.
+The system is evaluated using an integrated test suite (`tests/test_agent.py` and `tests/test_guardrails.py`) that checks:
+- Proper mapping of natural language to `UserProfile`.
+- Correct rejection of misaligned songs by the Guardrails.
+- End-to-end execution of adversarial prompts (e.g., "Adversarial: I am very relaxed but I want intense rock").
 
 ---
 
 ## Intended Use and Non-Intended Use
 
-**Intended:** **Teaching and demos.** Showing how **rules + data** produce recommendations you can **read and argue with**.
-
-**Not intended:** **Real product** decisions, **fairness** claims, or **personalized** music advice for paying users. It should **not** replace human judgment or a real recommender backed by **much more data** and **oversight**.
-
----
-
-## Ideas for Improvement
-
-1. **Penalize** or **discount** songs when mood clearly **conflicts** with what the user asked for, not only when it fails to match.
-
-2. **Group** related genres (e.g. map “indie pop” under pop) or add **synonyms** for moods.
-
-3. **Tune** diversity penalties or add **re-ranking** so variety feels natural, not just “penalize repeats.”
+**Intended:** **Teaching and demos.** Demonstrating how an "Agentic Loop" (Plan -> Act -> Check) can improve the reliability of a retrieval system.
+**Not intended:** Production systems. A real production system would replace the deterministic agent with a fine-tuned LLM and use a vector database for retrieval.
 
 ---
 
 ## Personal Reflection
 
-**Biggest learning moment:** Seeing **Gym Hero** rank high for “happy” seekers was the wake-up call. The math is “honest,” but it does not know that **intense** and **happy** can clash. **Design choices** (how big genre is vs mood) matter as much as the code.
-
-**AI tools:** They sped up **boilerplate** and **wording**, and helped **brainstorm** edge-case profiles. I still had to **trace the score by hand** for one song and run **`main`** to be sure the terminal matched my understanding. **Trust, then verify.**
-
-**Surprise:** A few **if** rules and addition still **feel** like a “recommendation” because **ranking** and **short explanations** mirror what apps do—just with the **cover removed**.
-
-**Next if I extended this:** I would add **valence** or **tempo bands**, a **diversity** pass on the top five, and a **slightly bigger** CSV so genre is not a **lottery** when only one row matches.
+**Phase 2 Learnings:** Moving from a simple logic script to an "Agentic Workflow" showed how much value lies in the "Check" phase. The `Guardrails` are essentially "Quality Control" for AI. Even if the retrieval (scoring) makes a mistake, the guardrail catches it.
+**Transparency:** Logging the Agent's decision-making process (`logs/agent_reasoning.log`) makes debugging significantly easier and builds trust in *why* a song was chosen or rejected.
