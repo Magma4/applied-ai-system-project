@@ -86,8 +86,9 @@ This project taught me that the most powerful part of an AI system isn't the mod
 
 ## 🌟 Stretch Features (Extra Credits)
 I implemented two advanced features to demonstrate system maturity:
-1.  **Enhanced Agentic Workflow (+2):** The `CuratorAgent` now performs a **Plan -> Act -> Reflect -> Refine** loop. It evaluates its initial results (Reflection) and, if they don't meet the intent (e.g., energy gap too wide), it automatically refines its strategy and retries the search.
-2.  **Evaluation Harness (+2):** I built a dedicated `src/eval_harness.py` script. It runs a **Golden Dataset** of adversarial prompts and prints a "System Evaluation Report" with PASS/FAIL status and confidence ratings, allowing for objective performance tracking.
+1.  **RAG Enhancement (+2):** I extended the retrieval system to use external **Music Theory documents** (`data/knowledge_base/`). The agent now performs a secondary retrieval step to find relevant musicology insights that justify its recommendations (e.g., explaining why Lofi helps with focus).
+2.  **Enhanced Agentic Workflow (+2):** The `CuratorAgent` now performs a **Plan -> Act -> Reflect -> Refine** loop. It evaluates its initial results (Reflection) and automatically refines its strategy if they don't meet the target energy or diversity.
+3.  **Evaluation Harness (+2):** I built a dedicated `src/eval_harness.py` script to objectively measure system quality against a Golden Dataset.
 
 ---
 *Created for the Applied AI System Project portfolio.*
