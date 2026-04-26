@@ -1,5 +1,11 @@
 import streamlit as st
 import logging
+import sys
+import os
+
+# Fix for ModuleNotFoundError: No module named 'src'
+sys.path.append(os.getcwd())
+
 from src.recommender import load_songs
 from src.agent import CuratorAgent
 from src.guardrails import EnergyAlignmentGuardrail, MoodSafetyGuardrail
