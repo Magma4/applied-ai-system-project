@@ -1,0 +1,14 @@
+# GENRE THEORY: LOFI
+Lofi (Low Fidelity) music is characterized by its steady, mid-tempo BPM (usually 70-90 BPM) and repetitive patterns. It is scientifically preferred for focus and study because the predictable rhythm acts as "sonic wallpaper," reducing cognitive load and allowing the brain to enter a deep "flow state."
+
+# GENRE THEORY: CLASSICAL
+Classical music, particularly from the Baroque period, often follows a 60-beats-per-minute pattern. This rhythm induces alpha brain waves, which are associated with relaxation and decreased heart rate. For sleep and stress reduction, classical music with minimal instrumental complexity is highly recommended.
+
+# GENRE THEORY: ROCK & METAL
+High-intensity genres like Rock and Metal trigger a surge of adrenaline and dopamine. The distorted guitars and aggressive percussion provide a "driving force" that is ideal for physical exertion and high-stakes concentration. It is best used for workouts or competitive gaming.
+
+# MOOD THEORY: CHILL & RELAXED
+Relaxation is best achieved when the "Valence" (musical positiveness) is neutral-to-high and the "Energy" is below 0.4. This combination signals the parasympathetic nervous system to downregulate, making it the primary choice for recovery and winding down.
+
+# MOOD THEORY: INTENSE & PUMPED
+To achieve a "Pumped" state, the auditory system requires high Energy (0.8+) and high Tempo (120+ BPM). This combination triggers the "Fight or Flight" response in a controlled, positive environment, leading to increased athletic performance.

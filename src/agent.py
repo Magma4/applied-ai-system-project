@@ -2,6 +2,7 @@ import re
 import logging
 from typing import Dict, Any, List, Tuple
 from src.recommender import UserProfile, recommend_songs, get_strategy_weights
+from src.knowledge import KnowledgeRetriever
 
 logger = logging.getLogger(__name__)
 
@@ -13,6 +14,7 @@ class CuratorAgent:
     
     def __init__(self, catalog: List[Dict[str, Any]]):
         self.catalog = catalog
+        self.knowledge_base = KnowledgeRetriever()
 
     def parse_intent(self, query: str) -> Tuple[UserProfile, bool, bool]:
         """
@@ -106,9 +108,10 @@ class CuratorAgent:
         logger.info(f"[Agent] Selected scoring strategy: {strategy}")
         return strategy
 
-    def process_request(self, query: str, guardrails: List[Any] = None) -> Tuple[List[Dict[str, Any]], UserProfile, str]:
+    def process_request(self, query: str, guardrails: List[Any] = None) -> Tuple[List[Tuple[Dict[str, Any], float, List[str]]], UserProfile, str, str]:
         """
         Enhanced Agentic Workflow: Plan -> Act -> Reflect -> Refine.
+        Now includes RAG (Retrieval-Augmented Generation) for expert insights.
         """
         logger.info("=== Enhanced Agentic Workflow Started ===")
         
@@ -116,7 +119,12 @@ class CuratorAgent:
         profile, found_genre, strict_mood = self.parse_intent(query)
         strategy = self.select_strategy(profile, query)
         
-        # 2. ACT (Initial attempt)
+        # 2. RAG (Augmentation)
+        # Retrieve expert insight based on the detected intent
+        insight = self.knowledge_base.retrieve_insight(query, profile.favorite_genre, profile.favorite_mood)
+        logger.info(f"[RAG] Retrieved Expert Insight: {insight[:50]}...")
+        
+        # 3. ACT (Initial attempt)
         logger.info(f"[Agent] Attempt 1: Strategy '{strategy}'")
         recommendations = self._retrieve(profile, strategy, found_genre)
         
@@ -167,7 +175,7 @@ class CuratorAgent:
         recommendations = safe_recs[:5]
             
         logger.info(f"=== Workflow Completed. Final Strategy: {strategy}. ===")
-        return recommendations, profile, strategy
+        return recommendations, profile, strategy, insight
 
     def _retrieve(self, profile: UserProfile, strategy: str, hard_genre: bool = False) -> List[Tuple[Dict[str, Any], float, List[str]]]:
         """Internal helper for retrieval."""

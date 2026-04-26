@@ -48,7 +48,7 @@ def run_evaluation():
     print("="*80 + "\n")
     
     for test in GOLDEN_DATASET:
-        recs_tuples, profile, strategy = agent.process_request(test["prompt"], guardrails)
+        recs_tuples, profile, strategy, insight = agent.process_request(test["prompt"], guardrails)
         recs = [t[0] for t in recs_tuples]
         
         passed = test["criteria"](recs)

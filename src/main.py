@@ -89,10 +89,11 @@ def main() -> None:
         _print_agent_section(query)
         
         # The Agentic Plan -> Act -> Check loop
-        recommendations, profile, strategy = agent.process_request(query, guardrails=guardrails)
+        recommendations, profile, strategy, insight = agent.process_request(query, guardrails=guardrails)
         
-        print(f"\n  [Agent Parsed Profile] Genre: {profile.favorite_genre}, Mood: {profile.favorite_mood}, Energy: {profile.target_energy}")
-        print(f"  [Agent Strategy Selected] {strategy}\n")
+        print(f"\n  [RAG Insight]: {insight}")
+        print(f"  [Agent Strategy]: {strategy.replace('_', ' ').title()}")
+        print(f"  [Agent Parsed Profile] Genre: {profile.favorite_genre}, Mood: {profile.favorite_mood}, Energy: {profile.target_energy}")
         
         _print_recommendations_table(recommendations)
         print()

@@ -79,8 +79,8 @@ def main():
             return
 
         with st.spinner("Agent is planning and retrieving..."):
-            # Run the Agentic Workflow
-            recommendations, profile, strategy = agent.process_request(query, guardrails=guardrails)
+            # Run the Agentic Workflow (Now with RAG)
+            recommendations, profile, strategy, insight = agent.process_request(query, guardrails=guardrails)
 
         # Show Agent Reasoning
         st.markdown("#### 🤖 Agent Reasoning")
@@ -91,6 +91,9 @@ def main():
             st.metric("Detected Mood", profile.favorite_mood.title())
         with col3:
             st.metric("Target Energy", f"{profile.target_energy:.2f}")
+
+        # Display RAG Insight
+        st.info(f"**Expert Music Theory Insight:** {insight}")
 
         st.markdown(f"<div class='reasoning-box'><b>Strategy Selected:</b> {strategy.replace('_', ' ').title()}<br>"
                     f"<i>The agent analyzed your prompt and prioritized the {strategy.split('_')[0]} characteristics of the catalog.</i></div>", 
