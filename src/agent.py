@@ -46,16 +46,25 @@ class CuratorAgent:
         moods = ["happy", "chill", "intense", "somber", "melancholic", "relaxed", "focus", "sad", "upbeat", "calm", "dreamy"]
         found_mood = False
         
-        # Priority: Check if user says "I am [mood]" or "feeling [mood]" (Flexible matching)
-        for m in moods:
-            # Check for "i am ... [mood]" or "i'm ... [mood]" or "feeling ... [mood]"
-            if (f"i am" in query_lower and m in query_lower and query_lower.find("i am") < query_lower.find(m)) or \
-               (f"i'm" in query_lower and m in query_lower and query_lower.find("i'm") < query_lower.find(m)) or \
-               (f"feeling" in query_lower and m in query_lower and query_lower.find("feeling") < query_lower.find(m)):
-                mood = m if m != "focus" else "chill"
+        # Priority: Check if user says "I am [mood]" or "feeling [mood]" (Precision matching)
+        anchor_indices = [query_lower.find("i am"), query_lower.find("i'm"), query_lower.find("feeling")]
+        anchor_idx = min([i for i in anchor_indices if i != -1], default=-1)
+        
+        if anchor_idx != -1:
+            best_m = None
+            min_dist = float('inf')
+            for m in moods:
+                m_idx = query_lower.find(m)
+                if m_idx > anchor_idx:
+                    dist = m_idx - anchor_idx
+                    if dist < min_dist:
+                        min_dist = dist
+                        best_m = m
+            
+            if best_m:
+                mood = best_m if best_m != "focus" else "chill"
                 found_mood = True
-                logger.info(f"  -> Detected Current State (Safety Anchor): {mood}")
-                break
+                logger.info(f"  -> Detected Primary State (Safety Anchor): {mood}")
         
         # Fallback: General keyword search
         if not found_mood:
