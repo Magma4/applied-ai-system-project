@@ -1,0 +1,33 @@
+2026-04-26 19:04:08,858 [INFO] === Agentic Workflow Started ===
+2026-04-26 19:04:08,858 [INFO] [Agent] Parsing intent for query: 'I'm feeling pumped and need a high energy pop workout track.'
+2026-04-26 19:04:08,858 [INFO] [Agent] Parsed Profile: UserProfile(favorite_genre='pop', favorite_mood='happy', target_energy=0.9, likes_acoustic=False)
+2026-04-26 19:04:08,859 [INFO] [Agent] Selected scoring strategy: energy_focused
+2026-04-26 19:04:08,859 [INFO] [Agent] Retrieving recommendations from catalog...
+2026-04-26 19:04:08,859 [INFO] [Agent] Applying Guardrails (Check phase)...
+2026-04-26 19:04:08,859 [WARNING]   [Guardrail Triggered] 'Dust Road Anthem' rejected: Energy variance too high: 0.42 > 0.40 (Song: 0.48, Target: 0.9)
+2026-04-26 19:04:08,859 [INFO] === Agentic Workflow Completed. Returned 5 songs. ===
+2026-04-26 19:04:08,860 [INFO] === Agentic Workflow Started ===
+2026-04-26 19:04:08,860 [INFO] [Agent] Parsing intent for query: 'I'm tired and want to focus, maybe some acoustic lofi.'
+2026-04-26 19:04:08,860 [INFO] [Agent] Parsed Profile: UserProfile(favorite_genre='lofi', favorite_mood='chill', target_energy=0.2, likes_acoustic=True)
+2026-04-26 19:04:08,860 [INFO] [Agent] Selected scoring strategy: mood_first
+2026-04-26 19:04:08,860 [INFO] [Agent] Retrieving recommendations from catalog...
+2026-04-26 19:04:08,860 [INFO] [Agent] Applying Guardrails (Check phase)...
+2026-04-26 19:04:08,860 [WARNING]   [Guardrail Triggered] 'Pulse Division' rejected: Energy variance too high: 0.47 > 0.40 (Song: 0.67, Target: 0.2)
+2026-04-26 19:04:08,860 [INFO] === Agentic Workflow Completed. Returned 5 songs. ===
+2026-04-26 19:04:08,861 [INFO] === Agentic Workflow Started ===
+2026-04-26 19:04:08,861 [INFO] [Agent] Parsing intent for query: 'I am very relaxed and just want to sleep, play some classical.'
+2026-04-26 19:04:08,861 [INFO] [Agent] Parsed Profile: UserProfile(favorite_genre='classical', favorite_mood='relaxed', target_energy=0.2, likes_acoustic=False)
+2026-04-26 19:04:08,861 [INFO] [Agent] Selected scoring strategy: balanced
+2026-04-26 19:04:08,861 [INFO] [Agent] Retrieving recommendations from catalog...
+2026-04-26 19:04:08,861 [INFO] [Agent] Applying Guardrails (Check phase)...
+2026-04-26 19:04:08,861 [WARNING]   [Guardrail Triggered] 'Midnight Sugar' rejected: Energy variance too high: 0.41 > 0.40 (Song: 0.61, Target: 0.2)
+2026-04-26 19:04:08,861 [WARNING]   [Guardrail Triggered] 'Pulse Division' rejected: Energy variance too high: 0.47 > 0.40 (Song: 0.67, Target: 0.2)
+2026-04-26 19:04:08,861 [INFO] === Agentic Workflow Completed. Returned 5 songs. ===
+2026-04-26 19:04:08,861 [INFO] === Agentic Workflow Started ===
+2026-04-26 19:04:08,861 [INFO] [Agent] Parsing intent for query: 'Adversarial: I am very relaxed but I want intense rock.'
+2026-04-26 19:04:08,861 [INFO] [Agent] Parsed Profile: UserProfile(favorite_genre='rock', favorite_mood='intense', target_energy=0.9, likes_acoustic=False)
+2026-04-26 19:04:08,861 [INFO] [Agent] Selected scoring strategy: energy_focused
+2026-04-26 19:04:08,861 [INFO] [Agent] Retrieving recommendations from catalog...
+2026-04-26 19:04:08,862 [INFO] [Agent] Applying Guardrails (Check phase)...
+2026-04-26 19:04:08,862 [WARNING]   [Guardrail Triggered] 'Dust Road Anthem' rejected: Energy variance too high: 0.42 > 0.40 (Song: 0.48, Target: 0.9)
+2026-04-26 19:04:08,862 [INFO] === Agentic Workflow Completed. Returned 5 songs. ===

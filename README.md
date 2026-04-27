@@ -93,12 +93,21 @@ I implemented two advanced features to demonstrate system maturity:
 ---
 
 ## 📽️ Loom Video Walkthrough
-> **[INSERT YOUR LOOM LINK HERE]**
-> *In this video, I demonstrate the system's end-to-end agentic workflow, the RAG knowledge base integration, and the safety guardrails in action.*
+> [!IMPORTANT]
+> **[Watch the End-to-End Demo Here](https://www.loom.com/share/fb6b6732166f410aa6872ba9c32ca274)**
+> *This video demonstrates the system's agentic workflow, the RAG knowledge base integration, and the safety guardrails in action.*
+
+---
 
 ## 🧠 Portfolio Reflection
 **What this project says about me as an AI Engineer:**
-Building the *Agentic VibeFinder* taught me that the most important part of AI engineering isn't just getting the model to work—it's ensuring the system is **reliable, predictable, and explainable.** By implementing a custom Agentic Loop (Plan-Act-Reflect-Refine) and a RAG Knowledge Base, I demonstrated that I can build sophisticated AI workflows that solve real-world problems while maintaining strict safety guardrails. I prioritize "AI Trust" by making sure every decision the system makes is auditable and backed by expert data.
+
+Building the **Agentic VibeFinder** taught me that the most powerful part of an AI system isn't just the underlying model, but the **workflow** that surrounds it. By implementing a custom **Plan-Act-Reflect-Refine** loop and a RAG Knowledge Base, I demonstrated that I can build sophisticated AI systems that are:
+1. **Reliable**: Using Guardrails to ensure safety and alignment.
+2. **Transparent**: Providing clear, auditable reasoning for every decision.
+3. **Autonomous**: Enabling self-correction through reflection and refinement.
+
+I prioritize "AI Trust" by making sure every decision the system makes is backed by expert data and safe for the user. This project reflects my commitment to engineering robust, production-ready AI solutions.
 
 ---
 *Created for the Applied AI System Project portfolio.*

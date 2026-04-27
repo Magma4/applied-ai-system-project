@@ -4,32 +4,39 @@ Copy and paste the following code into the [Mermaid Live Editor](https://mermaid
 
 ```mermaid
 flowchart TD
-    UserPrompt([User Natural Language Prompt]) --> Agent[CuratorAgent\n(Intent Parser)]
+    UserPrompt([User Natural Language Prompt]) --> Agent["CuratorAgent<br/>(Intent Parser)"]
     
     subgraph Agentic Workflow
-        Agent --> |1. Plan| Profile[UserProfile\n(Genre, Mood, Energy)]
-        Agent --> |Selects| Strategy[Scoring Strategy\n(e.g., energy_focused)]
+        Agent --> |"1. Plan"| Profile["UserProfile<br/>(Genre, Mood, Energy)"]
+        Agent --> |"Selects Strategy"| Strategy["Initial Strategy<br/>(e.g., balanced)"]
         
-        Profile --> |2. Act| Recommender[Recommender Engine\n(Retriever)]
-        Strategy --> Recommender
+        Strategy --> RAG["2. RAG<br/>(Knowledge Retrieval)"]
+        RAG --> |"Augmented Intent"| Act["3. Act<br/>(Initial Retrieval)"]
         
-        Recommender --> |Raw Recommendations| Guardrails[Guardrail Layer\n(Internal Evaluator)]
+        Act --> Reflect{"3. Reflect<br/>(Self-Evaluation)"}
         
-        Guardrails --> |3. Check| Alignment[Energy Alignment Check]
-        Guardrails --> |3. Check| Safety[Mood Safety Check]
+        Reflect --> |"Energy Gap > 0.25"| Refine["4. Refine<br/>(Switch Strategy)"]
+        Refine --> Act
+        
+        Reflect --> |"Meets Criteria"| Check["5. Check<br/>(Guardrail Layer)"]
     end
     
-    Alignment -- Pass --> Final[Top 5 Safe Songs]
+    subgraph Reliability Layer
+        Check --> Alignment["Energy Alignment Check"]
+        Check --> Safety["Mood Safety Check"]
+    end
+    
+    Alignment -- Pass --> Final["Top 5 Safe Songs"]
     Safety -- Pass --> Final
     
     Final --> CLI([CLI Output])
     
     subgraph Testing & Human Oversight
-        CLI --> Human[Human Review\n(Explainability & Trust)]
-        Tests[Pytest Suite\n(test_agent, test_guardrails)] -.-> |Validates Logic| Agentic
-        Tests -.-> |Validates Safety| Guardrails
+        CLI --> Human["Human Review<br/>(Explainability & Trust)"]
+        Tests["Pytest Suite"] -.-> |"Validates Logic"| Agent
+        Tests -.-> |"Validates Safety"| Check
     end
     
     Agent -.-> Log[(logs/agent_reasoning.log)]
-    Guardrails -.-> Log
+    Check -.-> Log
 ```
