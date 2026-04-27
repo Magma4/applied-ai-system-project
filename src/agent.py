@@ -42,24 +42,35 @@ class CuratorAgent:
                 logger.debug(f"  -> Found genre intent: {g}")
                 break
                 
-        # 2. Parse Mood
+        # 2. Parse Mood with Contradiction Detection
         moods = ["happy", "chill", "intense", "somber", "melancholic", "relaxed", "focus", "sad", "upbeat", "calm", "dreamy"]
         found_mood = False
+        
+        # Priority: Check if user says "I am [mood]" or "feeling [mood]"
         for m in moods:
-            if m in query_lower:
+            if f"i am {m}" in query_lower or f"i'm {m}" in query_lower or f"feeling {m}" in query_lower:
+                mood = m if m != "focus" else "chill"
                 found_mood = True
-                if m == "focus":
-                    mood = "chill"
-                elif m == "sad":
-                    mood = "somber"
-                elif m == "upbeat":
-                    mood = "happy"
-                elif m in ["calm", "dreamy"]:
-                    mood = "chill"
-                else:
-                    mood = m
-                logger.debug(f"  -> Found mood intent: {mood}")
+                logger.info(f"  -> Detected Current State (Safety Anchor): {mood}")
                 break
+        
+        # Fallback: General keyword search
+        if not found_mood:
+            for m in moods:
+                if m in query_lower:
+                    found_mood = True
+                    if m == "focus":
+                        mood = "chill"
+                    elif m == "sad":
+                        mood = "somber"
+                    elif m == "upbeat":
+                        mood = "happy"
+                    elif m in ["calm", "dreamy"]:
+                        mood = "chill"
+                    else:
+                        mood = m
+                    logger.debug(f"  -> Found mood intent: {mood}")
+                    break
 
         # 3. Parse Energy and fallback Moods
         if any(word in query_lower for word in ["high energy", "pumped", "workout", "intense", "fast"]):
