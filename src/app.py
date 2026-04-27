@@ -3,6 +3,10 @@ import logging
 import sys
 import os
 
+# Configure logging to show in console for the demo
+logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+logger = logging.getLogger(__name__)
+
 # Fix for ModuleNotFoundError: No module named 'src'
 sys.path.append(os.getcwd())
 
@@ -104,8 +108,13 @@ def main():
         st.markdown("### 🎼 Recommended Tracks")
         
         if not recommendations:
-            st.error("No songs passed the safety guardrails for this specific prompt. Try a broader vibe!")
+            st.error("🛡️ **Safety Guardrail Triggered:** No songs passed the safety checks for this specific prompt. The system detected a contradiction between your mood and the requested intensity.")
+            st.info("💡 **Tip:** Try a prompt that aligns your mood with your activity, like 'I'm focused and want some lofi' or 'I'm pumped and want some rock.'")
         else:
+            # If some songs were filtered out, show a subtle notice
+            if len(recommendations) < 5:
+                st.warning(f"⚠️ **Safety Notice:** Some tracks were filtered out by the Guardrail Layer to ensure alignment with your '{profile.favorite_mood}' mood.")
+                
             for i, (song, score, reasons) in enumerate(recommendations, start=1):
                 with st.container():
                     st.markdown(f"""
