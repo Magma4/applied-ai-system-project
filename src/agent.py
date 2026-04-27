@@ -23,6 +23,7 @@ class CuratorAgent:
         Returns: (UserProfile, found_genre_boolean, strict_mood_boolean)
         """
         query_lower = query.lower()
+        query_lower = " ".join(query_lower.split())
         logger.info(f"[Agent] Parsing intent for query: '{query}'")
         
         # Default baseline
