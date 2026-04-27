@@ -46,9 +46,12 @@ class CuratorAgent:
         moods = ["happy", "chill", "intense", "somber", "melancholic", "relaxed", "focus", "sad", "upbeat", "calm", "dreamy"]
         found_mood = False
         
-        # Priority: Check if user says "I am [mood]" or "feeling [mood]"
+        # Priority: Check if user says "I am [mood]" or "feeling [mood]" (Flexible matching)
         for m in moods:
-            if f"i am {m}" in query_lower or f"i'm {m}" in query_lower or f"feeling {m}" in query_lower:
+            # Check for "i am ... [mood]" or "i'm ... [mood]" or "feeling ... [mood]"
+            if (f"i am" in query_lower and m in query_lower and query_lower.find("i am") < query_lower.find(m)) or \
+               (f"i'm" in query_lower and m in query_lower and query_lower.find("i'm") < query_lower.find(m)) or \
+               (f"feeling" in query_lower and m in query_lower and query_lower.find("feeling") < query_lower.find(m)):
                 mood = m if m != "focus" else "chill"
                 found_mood = True
                 logger.info(f"  -> Detected Current State (Safety Anchor): {mood}")
